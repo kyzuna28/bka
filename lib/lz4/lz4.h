@@ -214,7 +214,7 @@ LZ4LIB_API const char *LZ4_versionString(
 /*! LZ4_compress_default() :
  *  Compresses 'srcSize' bytes from buffer 'src'
  *  into already allocated 'dst' buffer of size 'dstCapacity'.
- *  Compression is guaranteed to succeed if 'dstCapacity' >= lz4_compressBound(srcSize).
+ *  Compression is guaranteed to succeed if 'dstCapacity' >= LZ4_compressBound(srcSize).
  *  It also runs faster, so it's a recommended setting.
  *  If the function cannot compress 'src' into a more limited 'dst' budget,
  *  compression stops *immediately*, and the function result is zero.
@@ -250,21 +250,21 @@ LZ4LIB_API int LZ4_decompress_safe(const char *src, char *dst,
 *  Advanced Functions
 **************************************/
 #define LZ4_MAX_INPUT_SIZE 0x7E000000 /* 2 113 929 216 bytes */
-#define lz4_compressBound(isize)                                               \
+#define LZ4_COMPRESSBOUND(isize)                                               \
 	((unsigned)(isize) > (unsigned)LZ4_MAX_INPUT_SIZE ?                    \
 		 0 :                                                           \
 		 (isize) + ((isize) / 255) + 16)
 
-/*! lz4_compressBound() :
+/*! LZ4_compressBound() :
     Provides the maximum size that LZ4 compression may output in a "worst case" scenario (input data not compressible)
     This function is primarily useful for memory allocation purposes (destination buffer size).
-    Macro lz4_compressBound() is also provided for compilation-time evaluation (stack memory allocation for example).
-    Note that LZ4_compress_default() compresses faster when dstCapacity is >= lz4_compressBound(srcSize)
+    Macro LZ4_COMPRESSBOUND() is also provided for compilation-time evaluation (stack memory allocation for example).
+    Note that LZ4_compress_default() compresses faster when dstCapacity is >= LZ4_compressBound(srcSize)
         inputSize  : max supported value is LZ4_MAX_INPUT_SIZE
         return : maximum output size in a "worst case" scenario
               or 0, if input size is incorrect (too large or negative)
 */
-LZ4LIB_API int lz4_compressBound(int inputSize);
+LZ4LIB_API int LZ4_compressBound(int inputSize);
 
 /*! LZ4_compress_fast() :
     Same as LZ4_compress_default(), but allows selection of "acceleration" factor.
@@ -465,7 +465,7 @@ LZ4LIB_API void LZ4_attach_dictionary(LZ4_stream_t *workingStream,
 /*! LZ4_compress_fast_continue() :
  *  Compress 'src' content using data from previously compressed blocks, for better compression ratio.
  * 'dst' buffer must be already allocated.
- *  If dstCapacity >= lz4_compressBound(srcSize), compression is guaranteed to succeed, and runs faster.
+ *  If dstCapacity >= LZ4_compressBound(srcSize), compression is guaranteed to succeed, and runs faster.
  *
  * @return : size of compressed block
  *           or 0 if there is an error (typically, cannot fit into 'dst').
@@ -717,7 +717,7 @@ int LZ4_compress_destSize_extState(void *state, const char *src, char *dst,
  *   so it's a reasonable trick when inputs are known to be small.
  * - Require the compressor to deliver a "maximum compressed size".
  *   This is the `dstCapacity` parameter in `LZ4_compress*()`.
- *   When this size is < lz4_compressBound(inputSize), then compression can fail,
+ *   When this size is < LZ4_COMPRESSBOUND(inputSize), then compression can fail,
  *   in which case, the return code will be 0 (zero).
  *   The caller must be ready for these cases to happen,
  *   and typically design a backup scheme to send data uncompressed.
@@ -726,7 +726,7 @@ int LZ4_compress_destSize_extState(void *state, const char *src, char *dst,
  *
  * In-place compression can work in any buffer
  * which size is >= (maxCompressedSize)
- * with maxCompressedSize == lz4_compressBound(srcSize) for guaranteed compression success.
+ * with maxCompressedSize == LZ4_COMPRESSBOUND(srcSize) for guaranteed compression success.
  * LZ4_COMPRESS_INPLACE_BUFFER_SIZE() depends on both maxCompressedSize and LZ4_DISTANCE_MAX,
  * so it's possible to reduce memory requirements by playing with them.
  */
@@ -747,7 +747,7 @@ int LZ4_compress_destSize_extState(void *state, const char *src, char *dst,
 	 32) /* LZ4_DISTANCE_MAX can be safely replaced by srcSize when it's smaller */
 #define LZ4_COMPRESS_INPLACE_BUFFER_SIZE(maxCompressedSize)                    \
 	((maxCompressedSize) +                                                 \
-	 LZ4_COMPRESS_INPLACE_MARGIN) /**< maxCompressedSize is generally lz4_compressBound(inputSize), but can be set to any lower value, with the risk that compression can fail (return code 0(zero)) */
+	 LZ4_COMPRESS_INPLACE_MARGIN) /**< maxCompressedSize is generally LZ4_COMPRESSBOUND(inputSize), but can be set to any lower value, with the risk that compression can fail (return code 0(zero)) */
 
 #endif /* LZ4_STATIC_3504398509 */
 #endif /* LZ4_STATIC_LINKING_ONLY */

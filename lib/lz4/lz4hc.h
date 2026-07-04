@@ -54,7 +54,7 @@ extern "C" {
 /*! LZ4_compress_HC() :
  *  Compress data from `src` into `dst`, using the powerful but slower "HC" algorithm.
  * `dst` must be already allocated.
- *  Compression is guaranteed to succeed if `dstCapacity >= lz4_compressBound(srcSize)` (see "lz4.h")
+ *  Compression is guaranteed to succeed if `dstCapacity >= LZ4_compressBound(srcSize)` (see "lz4.h")
  *  Max supported `srcSize` value is LZ4_MAX_INPUT_SIZE (see "lz4.h")
  * `compressionLevel` : any value between 1 and LZ4HC_CLEVEL_MAX will work.
  *                      Values > LZ4HC_CLEVEL_MAX behave the same as LZ4HC_CLEVEL_MAX.
@@ -136,11 +136,11 @@ LZ4LIB_API int LZ4_freeStreamHC(LZ4_streamHC_t *streamHCPtr);
   using LZ4_setCompressionLevel() (experimental).
 
  @dst buffer should be sized to handle worst case scenarios
-  (see lz4_compressBound(), it ensures compression success).
+  (see LZ4_compressBound(), it ensures compression success).
   In case of failure, the API does not guarantee recovery,
   so the state _must_ be reset.
   To ensure compression success
-  whenever @dst buffer size cannot be made >= lz4_compressBound(),
+  whenever @dst buffer size cannot be made >= LZ4_compressBound(),
   consider using LZ4_compress_HC_continue_destSize().
 
   Whenever previous input blocks can't be preserved unmodified in-place during compression of next blocks,
