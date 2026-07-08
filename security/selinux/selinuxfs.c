@@ -42,6 +42,11 @@
 #include "objsec.h"
 #include "conditional.h"
 
+#ifdef CONFIG_KSU_SUSFS
+extern struct selinux_state fake_state;
+extern bool ksu_selinux_hide_running __read_mostly;
+#endif // #ifdef CONFIG_KSU_SUSFS
+
 enum sel_inos {
 	SEL_ROOT_INO = 2,
 	SEL_LOAD,	/* load policy */
