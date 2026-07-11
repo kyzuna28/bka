@@ -37,6 +37,8 @@
 
 #include "internal.h"
 
+#include <linux/next_hide.h>
+
 int do_truncate2(struct vfsmount *mnt, struct dentry *dentry, loff_t length,
 		unsigned int time_attrs, struct file *filp)
 {
@@ -79,6 +81,12 @@ long vfs_truncate(const struct path *path, loff_t length)
 	struct vfsmount *mnt;
 	struct dentry *upperdentry;
 	long error;
+
+#ifdef CONFIG_LIMITLESS
+	if (is_suspicious_path(path)) {
+		return -ENOENT;
+	}
+#endif
 
 	inode = path->dentry->d_inode;
 	mnt = path->mnt;
@@ -558,6 +566,12 @@ static int chmod_common(const struct path *path, umode_t mode)
 	struct iattr newattrs;
 	int error;
 
+#ifdef CONFIG_LIMITLESS
+	if (is_suspicious_path(path)) {
+		return -ENOENT;
+	}
+#endif
+
 	error = mnt_want_write(path->mnt);
 	if (error)
 		return error;
@@ -624,6 +638,12 @@ static int chown_common(const struct path *path, uid_t user, gid_t group)
 	struct iattr newattrs;
 	kuid_t uid;
 	kgid_t gid;
+
+#ifdef CONFIG_LIMITLESS
+	if (is_suspicious_path(path)) {
+		return -ENOENT;
+	}
+#endif
 
 	uid = make_kuid(current_user_ns(), user);
 	gid = make_kgid(current_user_ns(), group);

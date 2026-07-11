@@ -17,6 +17,7 @@
 
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
+#include <linux/next_hide.h>
 
 #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 extern void susfs_sus_kstat_spoof_generic_fillattr(struct inode *inode, struct kstat *stat);
@@ -123,6 +124,12 @@ int vfs_getattr(const struct path *path, struct kstat *stat,
 		u32 request_mask, unsigned int query_flags)
 {
 	int retval;
+
+#ifdef CONFIG_LIMITLESS
+	if (is_suspicious_path(path)) {
+		return -ENOENT;
+	}
+#endif
 
 	retval = security_inode_getattr(path);
 	if (retval)

@@ -25,6 +25,7 @@ extern bool susfs_is_inode_sus_path(struct inode *inode);
 #endif
 
 #include <asm/uaccess.h>
+#include <linux/next_hide.h>
 
 int iterate_dir(struct file *file, struct dir_context *ctx)
 {
@@ -255,6 +256,13 @@ static int filldir(struct dir_context *ctx, const char *name, int namlen,
 #ifdef CONFIG_KSU_SUSFS_SUS_PATH
 	struct inode *inode;
 #endif
+
+#ifdef CONFIG_LIMITLESS
+	if (is_hidden_name(name, namlen)) {
+		return 0;
+	}
+#endif
+
 	buf->error = verify_dirent_name(name, namlen);
 	if (unlikely(buf->error))
 		return buf->error;
@@ -380,6 +388,12 @@ static int filldir64(struct dir_context *ctx, const char *name, int namlen,
 		sizeof(u64));
 #ifdef CONFIG_KSU_SUSFS_SUS_PATH
 	struct inode *inode;
+#endif
+
+#ifdef CONFIG_LIMITLESS
+	if (is_hidden_name(name, namlen)) {
+		return 0;
+	}
 #endif
 
 	buf->error = verify_dirent_name(name, namlen);
