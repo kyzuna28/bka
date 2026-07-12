@@ -620,6 +620,30 @@ extern struct cpufreq_governor cpufreq_gov_interactive;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_SCHED)
 extern struct cpufreq_governor cpufreq_gov_sched;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_sched)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_PIXUTIL)
+extern struct cpufreq_governor cpufreq_gov_pixutil;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_pixutil)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_WALT)
+extern struct cpufreq_governor cpufreq_gov_walt;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_walt)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDHORIZON)
+extern struct cpufreq_governor cpufreq_gov_schedhorizon;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_schedhorizon)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_BLU_SCHEDUTIL)
+extern struct cpufreq_governor cpufreq_gov_blu_schedutil;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_blu_schedutil)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_PWRUTILX)
+extern struct cpufreq_governor cpufreq_gov_pwrutilx;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_pwrutilx)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ALUCARDSCHED)
+extern struct cpufreq_governor cpufreq_gov_alucardsched;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_alucardsched)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_HELIX)
+extern struct cpufreq_governor cpufreq_gov_helix;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_helix)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ENERGY)
+extern struct cpufreq_governor cpufreq_gov_energy;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_energy)
 #endif
 
 static inline bool cpufreq_can_do_remote_dvfs(struct cpufreq_policy *policy)

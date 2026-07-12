@@ -201,11 +201,16 @@ static void cpufreq_interactive_timer_resched(unsigned long cpu,
 {
 	struct cpufreq_interactive_policyinfo *ppol = per_cpu(polinfo, cpu);
 	struct cpufreq_interactive_cpuinfo *pcpu;
-	struct cpufreq_interactive_tunables *tunables =
-		ppol->policy->governor_data;
+	struct cpufreq_interactive_tunables *tunables;
 	u64 expires;
 	unsigned long flags;
 	int i;
+
+	/* PATCH 2: Cegah NULL dereference jika timer dipanggil saat teardown/hotplug */
+	if (unlikely(!ppol || !ppol->policy))
+		return;
+
+	tunables = ppol->policy->governor_data;
 
 	spin_lock_irqsave(&ppol->load_lock, flags);
 	expires = round_to_nw_start(ppol->last_evaluated_jiffy, tunables);
@@ -239,6 +244,11 @@ static void update_util_handler(struct update_util_data *data, u64 time,
 	unsigned long flags;
 
 	ppol = *this_cpu_ptr(&polinfo);
+	
+	/* PATCH 1: Cegah NULL pointer dereference akibat WALT/IPI race condition */
+	if (unlikely(!ppol))
+		return;
+
 	spin_lock_irqsave(&ppol->irq_work_lock, flags);
 	/*
 	 * The irq-work may not be allowed to be queued up right now
@@ -253,6 +263,7 @@ static void update_util_handler(struct update_util_data *data, u64 time,
 out:
 	spin_unlock_irqrestore(&ppol->irq_work_lock, flags);
 }
+
 
 static inline void gov_clear_update_util(struct cpufreq_policy *policy)
 {
