@@ -120,6 +120,7 @@ $(obj)/configs.o: $(obj)/config_data.h
 # Info from config_data can be extracted from /proc/config*
 targets += config_data.gz
 $(obj)/config_data.gz: arch/arm64/configs/beryllium-stock_defconfig FORCE
+$(call if_changed,gzip)
 
       filechk_ikconfiggz = (echo "static const char kernel_config_data[] __used = MAGIC_START"; cat $< | scripts/basic/bin2c; echo "MAGIC_END;")
 targets += config_data.h
